@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Multi-Page System</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header & Logo */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 900;
+        }
+
+        /* Layout */
+        .layout-container {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            flex-grow: 1;
+        }
+
+        /* Navigation Sidebar */
+        aside {
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem 1rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(56, 189, 248, 0.12);
+            color: var(--accent-color);
+        }
+
+        /* Main View Container */
+        main {
+            padding: 2rem;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page-section.active-page {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* UI Cards & Grid */
+        .page-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .card-stat-title {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: #fff;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        /* Table UI */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        table th, table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        table th {
+            color: var(--text-muted);
+            font-weight: 600;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 768px) {
+            .layout-container {
+                grid-template-columns: 1fr;
+            }
+            aside {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="app-logo">
+            <div class="logo-icon">M</div>
+            <span>MultiApp Pro</span>
+        </a>
+        <div style="font-size: 0.875rem; color: var(--text-muted);">
+            System Status: <span style="color: var(--success-color);">Operational</span>
+        </div>
+    </header>
+
+    <div class="layout-container">
+        <!-- Navigation Menu (Boggagii Dhammaantood) -->
+        <aside>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="switchPage('page-dashboard', this)">📊 Dashboard-ka</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchPage('page-registration', this)">📝 Diiwaangelinta</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchPage('page-records', this)">📁 Maamulka Xogta</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="switchPage('page-settings', this)">⚙️ Settings-ka</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Dynamic Content Pages -->
+        <main>
+            <!-- BOGGA 1: DASHBOARD -->
+            <section id="page-dashboard" class="page-section active-page">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard Overview</h1>
+                    <p class="page-subtitle">Guud mar ku saabsan xogta guud ee nidaamka.</p>
+                </div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-stat-title">Wutaba Xogta Kaydsan</div>
+                        <div class="card-stat-value" id="stat-total">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-stat-title">Isticmaalayaasha Admins</div>
+                        <div class="card-stat-value" id="stat-admins">0</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-stat-title">Isticmaalayaasha Normal</div>
+                        <div class="card-stat-value" id="stat-users">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Warbixin Kooban</h3>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">
+                        Nidaamkan wuxuu si buuxda u taageeraa kaydinta xogta LocalStorage-ka ah iyadoo la isticmaalayo GitHub CI/CD Actions oo otomaatiko ah.
+                    </p>
+                </div>
+            </section>
+
+            <!-- BOGGA 2: DIIWAANGELINTA (REGISTRATION FORM) -->
+            <section id="page-registration" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Diiwaangelin Cusub</h1>
+                    <p class="page-subtitle">Ku dar xog cusub nidaamka.</p>
+                </div>
+
+                <div class="card" style="max-width: 600px;">
+                    <form id="addUserForm">
+                        <div class="form-group">
+                            <label for="fullName">Magaca Buuxa</label>
+                            <input type="text" id="fullName" class="form-control" placeholder="Geli magaca buuxa..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">Email Address</label>
+                            <input type="email" id="userEmail" class="form-control" placeholder="example@domain.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userRole">Qaybta (Role)</label>
+                            <select id="userRole" class="form-control">
+                                <option value="User">Standard User</option>
+                                <option value="Admin">Administrator</option>
+                                <option value="Developer">Developer</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">Kaydi Xogta</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- BOGGA 3: MAAMULKA XOGTA (DATA MANAGEMENT) -->
+            <section id="page-records" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Maamulka Xogta</h1>
+                    <p class="page-subtitle">Eeg, raadi, ama ka tirtir xogta la dhiibay.</p>
+                </div>
+
+                <div class="card">
+                    <div style="margin-bottom: 1rem;">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Ka raadi magac ama email..." onkeyup="filterData()">
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Magaca Buuxa</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Taariikhda</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsTableBody">
+                                <!-- Data populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BOGGA 4: SETTINGS -->
+            <section id="page-settings" class="page-section">
+                <div class="page-header">
+                    <h1 class="page-title">Settings-ka System-ka</h1>
+                    <p class="page-subtitle">Habayso nidaamkaaga.</p>
+                </div>
+
+                <div class="card" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label>Magaca System-ka</label>
+                        <input type="text" class="form-control" value="MultiApp Pro System" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>CI/CD Automated Deployment</label>
+                        <input type="text" class="form-control" value="GitHub Actions + Docker (Nginx)" readonly>
+                    </div>
+                    <button class="btn btn-danger" onclick="clearAllData()">Nadiifi Dhammaan Xogta</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        &copy; 2026 MultiApp Enterprise. All rights reserved.
+    </footer>
+
+    <!-- App Logic & Page Switcher -->
+    <script>
+        // Data State Management
+        let appData = JSON.parse(localStorage.getItem('multi_app_data')) || [];
+
+        // Single Page Switching Logic
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active-page');
+            });
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            document.getElementById(pageId).classList.add('active-page');
+            element.classList.add('active');
+
+            if (pageId === 'page-dashboard') updateDashboardStats();
+            if (pageId === 'page-records') renderRecords();
+        }
+
+        // Form Submission Logic
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newItem = {
+                id: Date.now(),
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('userEmail').value,
+                role: document.getElementById('userRole').value,
+                date: new Date().toLocaleDateString()
+            };
+
+            appData.push(newItem);
+            localStorage.setItem('multi_app_data', JSON.stringify(appData));
+            this.reset();
+            alert('Xogta waa la kaydiyay si guul leh!');
+        });
+
+        // Render Table Data
+        function renderRecords(dataToRender = appData) {
+            const tbody = document.getElementById('recordsTableBody');
+            tbody.innerHTML = '';
+
+            if (dataToRender.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Xog ma jirto.</td></tr>`;
+                return;
+            }
+
+            dataToRender.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>#${index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                    <td>${item.role}</td>
+                    <td>${item.date}</td>
+                    <td><button class="btn btn-danger" onclick="deleteRecord(${item.id})">Tirtir</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Delete Individual Record
+        function deleteRecord(id) {
+            appData = appData.filter(item => item.id !== id);
+            localStorage.setItem('multi_app_data', JSON.stringify(appData));
+            renderRecords();
+            updateDashboardStats();
+        }
+
+        // Search/Filter Function
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = appData.filter(item => 
+                item.name.toLowerCase().includes(query) || 
+                item.email.toLowerCase().includes(query)
+            );
+            renderRecords(filtered);
+        }
+
+        // Dashboard Analytics Update
+        function updateDashboardStats() {
+            document.getElementById('stat-total').innerText = appData.length;
+            document.getElementById('stat-admins').innerText = appData.filter(i => i.role === 'Admin').length;
+            document.getElementById('stat-users').innerText = appData.filter(i => i.role === 'User').length;
+        }
+
+        // Clear Storage
+        function clearAllData() {
+            if (confirm('Ma ziirtaa in aad tirtirto dhammaan xogta?')) {
+                localStorage.removeItem('multi_app_data');
+                appData = [];
+                updateDashboardStats();
+                alert('Dhammaan xogta waa la tirtiray.');
+            }
+        }
+
+        // Initialize Application
+        updateDashboardStats();
+    </script>
+</body>
+</html>
